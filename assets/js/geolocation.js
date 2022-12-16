@@ -9,9 +9,9 @@ $('#search-form').on('submit', function (e) {
 	let searchInput = $('#search-input').val();
 
 	// Declare the API key
-	const APIKey = 'API-key';
+	const APIKey = '1a374aa07ec0bd02e61afc3e13dab4e3';
 
-	// Declare queryURL
+	// Declare query URL
 	const queryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${searchInput}&appid=${APIKey}`;
 
 	// * Use the AJAX call
