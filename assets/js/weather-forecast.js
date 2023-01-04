@@ -7,7 +7,7 @@ let city = localStorage.getItem('city');
 let latitude = localStorage.getItem('latitude');
 let longitude = localStorage.getItem('longitude');
 
-$('#search-form').on('submit', function (e) {
+$('#search-form').on('submit', e => {
 	e.preventDefault();
 
 	let city = $('#search-input').val().trim();
@@ -16,8 +16,6 @@ $('#search-form').on('submit', function (e) {
 		alert('Please, input a city name');
 		return;
 	}
-
-	capitalizeCityName(city);
 
 	// Declare API key
 	const APIKey = '1a374aa07ec0bd02e61afc3e13dab4e3';
@@ -28,48 +26,108 @@ $('#search-form').on('submit', function (e) {
 	$.ajax({
 		type: 'GET',
 		url: queryURL,
-		success: function (response) {
-			// Variable holding the response
-			const forecast = response.list;
-			console.log('--------------');
-			console.log(forecast);
-			console.log('--------------');
-			// Array of the Five Days
-			let fiveDaysForecast = [];
-			// Array of the timestamps
-			let timestampsForecast = [];
+	}).then(response => {
+		// Variable holding the response
+		const forecast = response.list;
+		// Array of the Five Days
+		let fiveDaysForecast = [];
 
-			// for...loop iterating over the list of the response object
-			for (let i = 0; i < forecast.length; i++) {
-				// Unix timestamp of the i forecast
-				let timestamp = forecast[i].dt;
+		// for...loop iterating over the list of the response object
+		for (let i = 0; i < forecast.length; i += 8) {
+			// Unix timestamp of the i forecast
+			let timestamp = forecast[i].dt;
+			// Future forecasts
+			let futureForecast = [];
 
-				// Conditional to retrieve data from the forecast array
-				if (i === 0) {
-					timestampsForecast.push(timestamp);
-					// ----------------------
-					console.log(timestamp);
-					// ----------------------
+			// Conditional to retrieve data from the forecast array
+			if (i === 0) {
+				// Object of the current day
+				let currentForecast = {
+					city: city,
+					date: moment.unix(timestamp).format('DD/MM/YY'),
+					icon: `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`,
+					temperature: Math.round(response.list[i].main.temp),
+					humidity: response.list[i].main.humidity,
+					'wind speed': (response.list[i].wind.speed * 3.6).toFixed(
+						2
+					),
+				};
 
-					// Object of the current day
-					let currentForecast = {
-						city: city,
-						date: moment.unix(timestamp).format('DD/MM/YY'),
-						icon: response.list[i].weather[i].id,
-						temperature: response.list[i].main.temp,
-						humidity: response.list[i].main.humidity,
-						'wind speed': response.list[i].wind.speed,
-					};
+				fiveDaysForecast.push(currentForecast);
+			} else if (i > 0) {
+				futureForecast[i] = {
+					date: moment.unix(timestamp).format('DD/MM/YY'),
+					icon: `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`,
+					temperature: Math.round(response.list[i].main.temp),
+					humidity: response.list[i].main.humidity,
+					'wind speed': (response.list[i].wind.speed * 3.6).toFixed(
+						2
+					),
+				};
 
-					console.log('--------------');
-					console.log(currentForecast);
-					// console.log(response.list[i]);
-					console.log('--------------');
-				}
+				fiveDaysForecast.push(futureForecast[i]);
 			}
-		},
+		}
+
+		localStorage.setItem('forecastArray', JSON.stringify(fiveDaysForecast));
+
+		displayCurrentForecast();
+		displayFutureForecast();
 	});
 });
 
-// Arrow function to capitalize first letter of the city name
-const capitalizeCityName = city => city.charAt(0).toUpperCase() + city.slice(1);
+function displayCurrentForecast() {
+	$('#today').empty();
+
+	const forecastArray = JSON.parse(localStorage.getItem('forecastArray'));
+	const currentDayForecast = forecastArray[0];
+	const titleEl = $('<h2>').text(
+		`${currentDayForecast.city} ${currentDayForecast.date} `
+	);
+	const iconEl = $('<img>').attr('src', currentDayForecast.icon);
+	const temperatureEl = $('<p>').text(`${currentDayForecast.temperature} °C`);
+	const humidityEl = $('<p>').text(
+		`Humidity: ${currentDayForecast.humidity} %`
+	);
+	const windEl = $('<p>').text(
+		`Wind: ${currentDayForecast['wind speed']} Km/h`
+	);
+
+	$('#today').append(titleEl, iconEl, temperatureEl, humidityEl, windEl);
+}
+function displayFutureForecast() {
+	$('#forecast').empty();
+
+	const forecastArray = JSON.parse(localStorage.getItem('forecastArray'));
+
+	for (let i = 0; i < forecastArray.length; i++) {
+		const day = forecastArray[i];
+
+		if (i > 0) {
+			let dayCard = $('<div>');
+			dayCard.attr('class', 'card col px-1 py-2 m-2');
+
+			let dateEl = $('<h4>').text(`${forecastArray[i].date} `);
+			let iconEl = $('<img>').attr('src', forecastArray[i].icon);
+			let temperatureEl = $('<p>').text(
+				`${forecastArray[i].temperature} °C`
+			);
+			let humidityEl = $('<p>').text(
+				`Humidity: ${forecastArray[i].humidity} %`
+			);
+			let windEl = $('<p>').text(
+				`Wind: ${forecastArray[i]['wind speed']} Km/h`
+			);
+
+			$(dayCard).append(
+				dateEl,
+				iconEl,
+				temperatureEl,
+				humidityEl,
+				windEl
+			);
+
+			$('#forecast').append(dayCard);
+		}
+	}
+}
