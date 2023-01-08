@@ -3,17 +3,22 @@
 let searched = [];
 
 // # CODE BLOCKS
-// * Code block to retrieve searched cities from the Local Storage
+// * Code block to retrieve searched cities from the Local Storage and render last search
 $(document).ready(() => {
-	var storedCities = JSON.parse(localStorage.getItem('searched'));
+	const storedCities = JSON.parse(localStorage.getItem('searched'));
 	if (storedCities !== null) {
 		searched = storedCities;
 	}
 	renderButtons();
+
+	const forecastArray = JSON.parse(localStorage.getItem('forecastArray'));
+
+	renderCurrentForecast(forecastArray);
+	renderFutureForecast(forecastArray);
 });
 // * Event listener on all elements with the class 'city'
 $(document).on('click', '.city', function () {
-	var city = $(this).attr('data-city');
+	const city = $(this).attr('data-city');
 
 	// Iterates over every city to check if is the same name and then renders forecast if true
 	searched.map(item => {
