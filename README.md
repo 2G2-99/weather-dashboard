@@ -4,7 +4,7 @@ This application works as a basic weather dashboard, where you can find the info
 
 ## Instructions
 
-This application consist on searching a city by its name with an input, which runs three AJAX calls: ==Moment.js API==, ==OpenWeather Geolocation API==, ==OpenWeather Forecast API==. Then the weather forecast is displayed. Every time there is a successful search, this one will be stored on a search history list based on the Local Storage for an easy access by displaying buttons for each city.
+This application consist on searching a city by its name with an input, which runs three AJAX calls: Moment.js API OpenWeather Geolocation API OpenWeather Forecast API Then the weather forecast is displayed. Every time there is a successful search, this one will be stored on a search history list based on the Local Storage for an easy access by displaying buttons for each city.
 
 ## Screenshot
 
