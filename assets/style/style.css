@@ -1,0 +1,96 @@
+:root {
+	/* COLORS */
+	--charcoal: rgb(38, 70, 83);
+	--persian-green: rgb(42, 157, 143);
+	--maize-crayola: rgb(233, 196, 106);
+	--sandy-brown: rgb(244, 162, 97);
+	--burnt-sienna: rgb(231, 111, 81);
+}
+
+body {
+	background-color: var(--maize-crayola);
+	color: var(--charcoal);
+}
+
+/* HEADER */
+h1 {
+	color: var(--maize-crayola);
+}
+
+/* FORM */
+#search-input {
+	background-color: var(--sandy-brown);
+	border: 0.125em solid var(--persian-green);
+	border-radius: 0.5em;
+	color: var(--charcoal);
+	margin: 0.25em;
+	outline: none;
+}
+
+#search-input:focus {
+	border: 0.125em solid var(--persian-green);
+}
+
+#search-button {
+	background-color: var(--persian-green);
+	border-radius: 0.5em;
+	color: var(--maize-crayola);
+	font-weight: 700;
+	margin: 0.25em;
+	outline: none;
+	transition: all 0.5s;
+}
+
+/* BUTTON EFFECTS */
+#search-button:hover {
+	transform: scale(1.05);
+	transition: all 0.8s;
+	transition-timing-function: ease-in-out;
+}
+
+#send-btn:active {
+	transform: scale(1);
+	transition: all 0.25s;
+	transition-timing-function: ease-out;
+}
+
+/* CITY BUTTONS */
+.city {
+	background-color: var(--burnt-sienna);
+	border: none;
+	color: var(--charcoal);
+}
+
+.city:hover {
+	background-color: var(--charcoal);
+	border: none;
+	color: var(--burnt-sienna);
+}
+
+/* FORECAST CARDS */
+#today {
+	background-color: var(--persian-green);
+	border-radius: 0.25em;
+	color: white;
+	padding: 0.5em;
+}
+
+#today h2 {
+	color: var(--maize-crayola);
+}
+
+#today img {
+	width: 6em;
+}
+
+.card {
+	background-color: var(--burnt-sienna);
+}
+
+.card h4 {
+	color: var();
+}
+
+.card img {
+	width: 4em;
+}
