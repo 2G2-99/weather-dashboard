@@ -1,38 +1,35 @@
-// # LOCAL STORAGE DATA
-// // Getting value of current hour from the Local Storage
-// const hour = localStorage.getItem('current hour');
-// console.log(hour);
-
-// // Values from the Local Storage
-// let cityName = localStorage.getItem('city');
-// let latitude = localStorage.getItem('latitude');
-// let longitude = localStorage.getItem('longitude');
-
 // # VARIABLES
 // Empty array to store the searched cities
 let searched = [];
 
+// # CODE BLOCKS
 // * Code block to retrieve searched cities from the Local Storage
 $(document).ready(() => {
-	var storedCities = JSON.parse(localStorage.getItem('cities'));
+	var storedCities = JSON.parse(localStorage.getItem('searched'));
 	if (storedCities !== null) {
 		searched = storedCities;
 	}
-	// renderButtons(searched);
+	renderButtons();
 });
-
-// * Event listener on all element with the class 'city'
+// * Event listener on all elements with the class 'city'
 $(document).on('click', '.city', function () {
 	var city = $(this).attr('data-city');
-	initForecast(city);
+
+	// Iterates over every city to check if is the same name and then renders forecast if true
+	searched.map(item => {
+		if (item.city === city) {
+			renderCurrentForecast(item.forecast);
+			renderFutureForecast(item.forecast);
+		}
+	});
 });
 
 // # FUNCTIONS
-// function to stores cities to Local Storage
+// *Function to stores cities to Local Storage
 function saveOnLocalStorage(searched) {
 	localStorage.setItem('searched', JSON.stringify(searched));
 }
-// Function to render forecast of the current day
+// *Function to render forecast of the current day
 function renderCurrentForecast(fiveDaysForecast) {
 	$('#today').empty();
 
@@ -51,7 +48,7 @@ function renderCurrentForecast(fiveDaysForecast) {
 
 	$('#today').append(titleEl, iconEl, temperatureEl, humidityEl, windEl);
 }
-// Function to render forecast of the days ahead
+// *Function to render forecast of the days ahead
 function renderFutureForecast(fiveDaysForecast) {
 	$('#forecast').empty();
 
@@ -86,35 +83,40 @@ function renderFutureForecast(fiveDaysForecast) {
 		}
 	}
 }
-// function that adds city to the searched array
+// *Function that adds city to the searched array
 function addCityToCities(city, fiveDaysForecast) {
 	const cityName = fiveDaysForecast[0].city;
 	let exist = false;
 
 	searched.map(city => {
 		if (city.city === cityName) {
-			console.log(`city already exists`);
 			exist = true;
 			return;
 		}
 	});
 
 	if (!exist) {
-		console.log('Needs to be added');
 		searched.push({
 			city: cityName,
 			forecast: fiveDaysForecast,
 		});
 	}
-
-	console.log(searched);
 }
+// *Function that adds button for city searched
+function renderButtons() {
+	$('#history').empty();
 
-// * function that initiates the Forecast API
+	// Loops through the array of cities
+	searched.map(function (city) {
+		var btnEl = $('<button>');
+		btnEl.addClass('city btn btn-secondary btn-sm btn-block');
+		btnEl.attr('data-city', city.city);
+		btnEl.text(city.city);
+		$('#history').append(btnEl);
+	});
+}
+// * Function that initiates the Forecast API
 function initForecast(cityName, latitude, longitude) {
-	console.log(cityName);
-	console.log(latitude, longitude);
-
 	// Declare API key
 	const APIKey = '1a374aa07ec0bd02e61afc3e13dab4e3';
 	// Declare query URL
@@ -144,7 +146,7 @@ function initForecast(cityName, latitude, longitude) {
 				let currentForecast = {
 					city: cityName,
 					date: moment.unix(timestamp).format('DD/MM/YY'),
-					icon: `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`,
+					icon: `http://openweathermap.org/img/w/${response.list[i].weather[0].icon}@2x.png`,
 					temperature: Math.round(response.list[i].main.temp),
 					humidity: response.list[i].main.humidity,
 					'wind speed': (response.list[i].wind.speed * 3.6).toFixed(
@@ -157,7 +159,7 @@ function initForecast(cityName, latitude, longitude) {
 			} else if (i > 0) {
 				futureForecast[i] = {
 					date: moment.unix(timestamp).format('DD/MM/YY'),
-					icon: `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`,
+					icon: `http://openweathermap.org/img/w/${response.list[i].weather[0].icon}@2x.png`,
 					temperature: Math.round(response.list[i].main.temp),
 					humidity: response.list[i].main.humidity,
 					'wind speed': (response.list[i].wind.speed * 3.6).toFixed(
@@ -169,11 +171,13 @@ function initForecast(cityName, latitude, longitude) {
 				fiveDaysForecast.push(futureForecast[i]);
 			}
 		}
-		// console.log(fiveDaysForecast);
+
+		localStorage.setItem('forecastArray', JSON.stringify(fiveDaysForecast));
 
 		renderCurrentForecast(fiveDaysForecast);
 		renderFutureForecast(fiveDaysForecast);
 		addCityToCities(cityName, fiveDaysForecast);
 		saveOnLocalStorage(searched);
+		renderButtons();
 	});
 }
