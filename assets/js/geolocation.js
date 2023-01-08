@@ -44,5 +44,6 @@ $('#search-form').on('submit', function (e) {
 		let cityInput = $('#search-input').val(localStorage.getItem('city'));
 
 		initForecast(cityName, latitude, longitude);
+
 	});
 });
