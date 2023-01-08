@@ -13,8 +13,15 @@ $(document).ready(() => {
 
 	const forecastArray = JSON.parse(localStorage.getItem('forecastArray'));
 
-	renderCurrentForecast(forecastArray);
-	renderFutureForecast(forecastArray);
+	console.log(forecastArray);
+
+	if (forecastArray === null || forecastArray === undefined) {
+		$('#today').empty();
+		$('#forecast').empty();
+	} else {
+		renderCurrentForecast(forecastArray);
+		renderFutureForecast(forecastArray);
+	}
 });
 // * Event listener on all elements with the class 'city'
 $(document).on('click', '.city', function () {
