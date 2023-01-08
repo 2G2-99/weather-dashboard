@@ -146,7 +146,7 @@ function initForecast(cityName, latitude, longitude) {
 				let currentForecast = {
 					city: cityName,
 					date: moment.unix(timestamp).format('DD/MM/YY'),
-					icon: `http://openweathermap.org/img/w/${response.list[i].weather[0].icon}@2x.png`,
+					icon: `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`,
 					temperature: Math.round(response.list[i].main.temp),
 					humidity: response.list[i].main.humidity,
 					'wind speed': (response.list[i].wind.speed * 3.6).toFixed(
@@ -159,7 +159,7 @@ function initForecast(cityName, latitude, longitude) {
 			} else if (i > 0) {
 				futureForecast[i] = {
 					date: moment.unix(timestamp).format('DD/MM/YY'),
-					icon: `http://openweathermap.org/img/w/${response.list[i].weather[0].icon}@2x.png`,
+					icon: `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`,
 					temperature: Math.round(response.list[i].main.temp),
 					humidity: response.list[i].main.humidity,
 					'wind speed': (response.list[i].wind.speed * 3.6).toFixed(
