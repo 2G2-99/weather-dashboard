@@ -13,8 +13,6 @@ $(document).ready(() => {
 
 	const forecastArray = JSON.parse(localStorage.getItem('forecastArray'));
 
-	console.log(forecastArray);
-
 	if (forecastArray === null || forecastArray === undefined) {
 		$('#today').empty();
 		$('#forecast').empty();
